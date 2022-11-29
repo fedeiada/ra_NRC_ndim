@@ -1,17 +1,13 @@
 import random
-import threading
 import time
 import numpy as np
-import sys
-import queue
-
 
 class Node:
     """Representing the node and its actions and attributes. This class inherits the Thread class, so each instance
     of this class would be executed in a separate thread. This is important in order of improving the simulation
     speed and also simulating asynchronous communications """
 
-    def __init__(self, node_id: int, x0: np.array, epsilon: float, c: float, costfun: int,
+    def __init__(self, node_id: int, x0: np.array, epsilon: float, c: float, costfun: str,
                  minimum_accepted_divergence: float,
                  adjacency_vector: np.array,
                  simulation_function_xtx_btx):
@@ -22,19 +18,12 @@ class Node:
         self.epsilon = epsilon
         self.xi = np.array(x0) + np.random.uniform(-1, 1, x0.size)
 
-        self.cost_function = costfun
-        self.coeff = []
-        '''if self.node_id%2 == 0:
-            for i in range(self.cost_function):
-                if i == 1:
-                    self.coeff.append(round(random.uniform(-2, 0), 3))
-                else:
-                    self.coeff.append(round(random.uniform(0, 2), 3))
-        else:
-            for i in range(self.cost_function):
-                self.coeff.append(round(random.uniform(0, 2), 3))'''
-        for i in range(self.cost_function):
-            self.coeff.append(round(random.uniform(0, 2), 3))
+        # generate random cost function
+        cost_functions = {
+            'quad': self.quadratic()
+        }
+        self.A, self.b = cost_functions[costfun]
+        self.identifier = costfun
 
         # list for storing evolution of signals
         self.all_calculated_xis = []
@@ -42,9 +31,11 @@ class Node:
         self.ratio_evol = []
         self.zi_evol = []
 
+
+
         self.simulation_function_xtx_btx = simulation_function_xtx_btx
 
-        self.ff = simulation_function_xtx_btx.get_fn(self.xi, self.cost_function, self.coeff)
+        self.ff = simulation_function_xtx_btx.get_fn(self.xi, self.A, self.b)
 
         self.number_of_neighbors = np.sum(adjacency_vector)
         self.minimum_accepted_divergence = minimum_accepted_divergence
@@ -61,6 +52,8 @@ class Node:
         #self.gi_old = np.subtract((self.hi * self.xi), self.simulation_function_xtx_btx.get_gradient_fn(self.xi, self.cost_function, self.coeff))
         self.zi = np.eye(x0.size) #self.hi_old
         self.yi = np.zeros(x0.size) #self.gi_old
+
+        self.c = c
         self.cI = c * np.eye(x0.size)  # variable to be check in order to ensure robustness and large basin of attraction
 
 
@@ -82,6 +75,14 @@ class Node:
 
         self.ratio = 0
 
+    def quadratic(self):
+        while True:
+            A = np.random.uniform(-1, 2, (self.xi.size, self.xi.size))
+            A = 0.5 * (A + A.transpose()) # make the matrix symmetric
+            if np.linalg.det(A) >= 0.8:   # ensure positive definiteness
+                break
+        b = np.random.uniform(0, 2, self.xi.size)
+        return A,b
     def transmit_data(self):
         """This method update the yi and zi in each iteration and create a message including the new updated yi and
         zi. Finally the new message will be broadcast to all neighbors of this node. """
@@ -152,7 +153,7 @@ class Node:
             self.evolution_costfun.append(self.ff)
 
         # check condition on z
-        if (np.abs(self.zi) <= self.cI):#.all():
+        if (np.linalg.det(self.zi) <= self.c):
             self.zi = self.cI
 
         '''if iter >= 3000:
@@ -161,13 +162,13 @@ class Node:
         self.xi = (1 - self.epsilon) * self.xi + np.matmul((self.epsilon * np.linalg.inv(self.zi)),
                                                                np.transpose(self.yi))
 
-        self.ff = self.simulation_function_xtx_btx.get_fn(self.xi, self.cost_function, self.coeff)
+        self.ff = self.simulation_function_xtx_btx.get_fn(self.xi, self.A, self.b)
 
         self.gi_old = self.gi
         self.hi_old = self.hi
 
-        self.hi = self.simulation_function_xtx_btx.get_hessian_fn(self.xi, self.cost_function, self.coeff)
-        self.gi = np.subtract((self.hi*self.xi), self.simulation_function_xtx_btx.get_gradient_fn(self.xi, self.cost_function, self.coeff))
+        self.hi = self.simulation_function_xtx_btx.get_hessian_fn(self.xi, self.A)
+        self.gi = np.subtract(np.matmul(self.hi, self.xi), self.simulation_function_xtx_btx.get_gradient_fn(self.xi, self.A, self.b))
 
         self.yi = self.yi + self.gi - self.gi_old
         self.zi = self.zi + self.hi - self.hi_old

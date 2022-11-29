@@ -6,14 +6,14 @@ class SimulationSpecification:
     """Data-holder for simulation specification. This class handles all the required user interactions in order to
     collect the simulation specification. """
     def __init__(self):
-        self.number_of_nodes: list[Node] = 6
-        self.x0 = np.array([0])
-        self.epsilon = 0.001
+        self.number_of_nodes: list[Node] = 3
+        self.x0 = np.array([0, 1, 0.46])
+        self.epsilon = 0.0001
         self.min_accepted_divergence = 0.00001
         self.c = 0.0000004
         self.p = 0.5  # prob of node selection
-        self.costfun = 5  # 3 -> exp , 5->poly4, 2->quadratic
-        self.MAX_ITER = 60000
+        self.costfun = 'quad'  # 'exp' -> exp , 'quad'->quadratic
+        self.MAX_ITER = 10000
 
 
 

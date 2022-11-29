@@ -9,37 +9,21 @@ class SimulationFunctionXTX_BTX:
 
 
     @staticmethod
-    def get_fn(x: numpy.array, cost_fun, coeff) -> numpy.array:
-        """This method can be used to calculate the outcome of the function for each given Xi and Bi"""
-        if cost_fun == 3:
-            f = coeff[0] * (np.exp(coeff[1] * (x + coeff[2])))
-        elif cost_fun == 2:
-            f = coeff[0] * (x + coeff[1]) ** 2
-        elif cost_fun == 5:
-            f = coeff[0] * ((x+2) ** 4) #+ coeff[1] * (x ** 3) + coeff[2] * (x ** 2) + coeff[3] * x + coeff[4]
+    def get_fn(x: numpy.array, A, b) -> numpy.array:
+        """This method can be used to calculate the outcome of the function for each given Xi, Ai and Bi"""
+        f = numpy.matmul(numpy.matmul(numpy.transpose(x),A), x) + numpy.matmul(numpy.transpose(b), x)
         return numpy.array(f)
 
     @staticmethod
-    def get_gradient_fn(x: numpy.array, cost_fun, coeff) -> numpy.array:
+    def get_gradient_fn(x: numpy.array, A, b) -> numpy.array:
         """This method can be used to calculate the gradient for any given Xi."""
-        if cost_fun == 3:
-            g = (coeff[0] * coeff[1]) * (np.exp(coeff[1] * (x + coeff[2])))
-        elif cost_fun == 2:
-            g = 2 * coeff[0] * (x + coeff[1])
-        elif cost_fun == 5:
-            g = 4 * coeff[0] * ((x+2) ** 3) #+ 3 * coeff[1] * (x ** 2) + 2 * coeff[2] * x + coeff[3]
+        g = 2*np.matmul(A, x) + b
         return numpy.array(g)
 
     @staticmethod
-    def get_hessian_fn(x: numpy.array, cost_fun, coeff) -> numpy.array:
+    def get_hessian_fn(x: numpy.array, A) -> numpy.array:
         """This method can be used to calculate the hessian for any given Xi."""
-        if cost_fun == 3:
-            h = (coeff[0] * (coeff[1] ** 2)) * (np.exp(coeff[1] * (x + coeff[2])))
-        elif cost_fun == 2:
-            h = 2 * coeff[0]
-        elif cost_fun == 5:
-            h = 12 * coeff[0] * ((x+2) ** 2) + 0.000005 #+ 6 * coeff[1] * x + 2 * coeff[2]
-        return numpy.array(h)
+        return numpy.array(2*A)
 
 
     '''@staticmethod

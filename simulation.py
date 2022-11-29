@@ -53,7 +53,7 @@ number_of_neighbors = [np.sum(graph_matrix[i]) for i in range(sim_spec.number_of
 nodes = []
 
 # choose type of cost function
-cost_function = ['exp', 'poly_4', 'poly_2']
+#cost_function = ['exp', 'poly_4', 'poly_2']
 simulationFunction = SimulationFunctionXTX_BTX.SimulationFunctionXTX_BTX()
 
 for i in range(sim_spec.number_of_nodes):
@@ -144,7 +144,7 @@ fig, axs = plt.subplots(1, 2, figsize=(13, 8))
 for k in range(iter-2):
     mse_k = 0
     for i in range(sim_spec.number_of_nodes):
-        mse_k += ((np.abs(nodes[i].all_calculated_xis[k]-nodes[i].xi))**2)/sim_spec.number_of_nodes
+        mse_k += ((np.abs(np.abs(nodes[i].all_calculated_xis[k])-np.abs(nodes[i].xi)))**2)/sim_spec.number_of_nodes
         dst = np.sqrt(np.sum((nodes[i].xi - nodes[i].all_calculated_xis[k]) ** 2))
         distances[i].append(dst)
     MSE.append(mse_k)
@@ -168,7 +168,7 @@ plt.show()
 
 fig, axs = plt.subplots(1, 2, figsize=(13, 8))
 for j in range(sim_spec.number_of_nodes):
-    axs[0].plot(nodes[j].ratio_evol[0:2000], label=f'g/h_{j}')
+    axs[0].plot(nodes[j].ratio_evol[0:100], label=f'g/h_{j}')
     axs[1].plot(nodes[j].zi_evol[0:2000], label=f'z_{j}')
 axs[0].legend(loc='upper right', ncol=1)
 axs[0].set_title('Evolution of ratio consensus')
@@ -185,7 +185,7 @@ plt.show()
 
 for j in range(sim_spec.number_of_nodes):
     print(f'            node_{j}:\n'
-          f'coeff:{nodes[j].coeff}\n'
+          f'A:{nodes[j].A}  b:{nodes[j].b}\n'
           f'init:{nodes[j].all_calculated_xis[0]}\n'
           f'ending point:{nodes[j].xi}\n'
           f'----------------------------------------------------\n')
