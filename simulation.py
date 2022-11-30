@@ -76,8 +76,8 @@ iter = 1
 while not CONVERGENCE_FLAG:
     # randomly activate some agents
     #id_of_agent_activated = random.sample(agent_identifier, k=random.randint(1, sim_spec.number_of_nodes))  # chose which agent activate
-    id_of_agent_activated = random_selection.persistent_communication()
-
+    #id_of_agent_activated = random_selection.persistent_communication()
+    id_of_agent_activated = random.sample(agent_identifier, k=3)
 
     # usefull breakpoint to debug
     if iter == 2000:
@@ -144,7 +144,7 @@ fig, axs = plt.subplots(1, 2, figsize=(13, 8))
 for k in range(iter-2):
     mse_k = 0
     for i in range(sim_spec.number_of_nodes):
-        mse_k += ((np.abs(np.abs(nodes[i].all_calculated_xis[k])-np.abs(nodes[i].xi)))**2)/sim_spec.number_of_nodes
+        mse_k += ((np.abs(np.linalg.norm(nodes[i].all_calculated_xis[k])-np.linalg.norm(nodes[i].xi)))**2)/sim_spec.number_of_nodes
         dst = np.sqrt(np.sum((nodes[i].xi - nodes[i].all_calculated_xis[k]) ** 2))
         distances[i].append(dst)
     MSE.append(mse_k)
@@ -192,7 +192,7 @@ for j in range(sim_spec.number_of_nodes):
 
 
 
-
+np.linalg.norm
 '''nodes[i].yi = (1 / (nodes[i].number_of_neighbors+1)) * nodes[i].yi
             nodes[i].zi = (1 / (nodes[i].number_of_neighbors + 1)) * nodes[i].zi
             nodes[i].sigma_yi = nodes[i].sigma_yi + nodes[i].yi

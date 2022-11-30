@@ -78,8 +78,8 @@ class Node:
     def quadratic(self):
         while True:
             A = np.random.uniform(-1, 2, (self.xi.size, self.xi.size))
-            A = 0.5 * (A + A.transpose()) # make the matrix symmetric
-            if np.linalg.det(A) >= 0.8:   # ensure positive definiteness
+            A = 0.5 * (A + A.transpose())  # make the matrix symmetric
+            if np.linalg.det(A) >= 1:   # ensure positive definiteness
                 break
         b = np.random.uniform(0, 2, self.xi.size)
         return A,b
