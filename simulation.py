@@ -53,7 +53,6 @@ number_of_neighbors = [np.sum(graph_matrix[i]) for i in range(sim_spec.number_of
 nodes = []
 
 # choose type of cost function
-#cost_function = ['exp', 'poly_4', 'poly_2']
 simulationFunction = SimulationFunctionXTX_BTX.SimulationFunctionXTX_BTX()
 
 for i in range(sim_spec.number_of_nodes):
@@ -76,8 +75,8 @@ iter = 1
 while not CONVERGENCE_FLAG:
     # randomly activate some agents
     #id_of_agent_activated = random.sample(agent_identifier, k=random.randint(1, sim_spec.number_of_nodes))  # chose which agent activate
-    #id_of_agent_activated = random_selection.persistent_communication()
-    id_of_agent_activated = random.sample(agent_identifier, k=3)
+    id_of_agent_activated = random_selection.persistent_communication()
+    #id_of_agent_activated = random.sample(agent_identifier, k=3)
 
     # usefull breakpoint to debug
     if iter == 2000:

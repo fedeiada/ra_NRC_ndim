@@ -20,7 +20,8 @@ class Node:
 
         # generate random cost function
         cost_functions = {
-            'quad': self.quadratic()
+            'quad': self.quadratic(),
+            'exp' : self.exponential()
         }
         self.A, self.b = cost_functions[costfun]
         self.identifier = costfun
@@ -35,7 +36,7 @@ class Node:
 
         self.simulation_function_xtx_btx = simulation_function_xtx_btx
 
-        self.ff = simulation_function_xtx_btx.get_fn(self.xi, self.A, self.b)
+        self.ff = simulation_function_xtx_btx.get_fn(self.xi, self.A, self.b, self.identifier)
 
         self.number_of_neighbors = np.sum(adjacency_vector)
         self.minimum_accepted_divergence = minimum_accepted_divergence
@@ -83,6 +84,21 @@ class Node:
                 break
         b = np.random.uniform(0, 2, self.xi.size)
         return A,b
+
+    def exponential(self):
+        A = np.zeros((2, self.xi.size, self.xi.size))
+        b = np.zeros((2, self.xi.size))
+        for i in range(2):
+            while True:
+                AA = np.random.uniform(-1, 2, (self.xi.size, self.xi.size))
+                AA = 0.5 * (AA + AA.transpose())  # make the matrix symmetric
+                if np.linalg.det(AA) >= 1:  # ensure positive definiteness
+                    break
+            bb = np.random.uniform(0, 1, self.xi.size)
+            A[i] = AA
+            b[i] = bb
+        return A, b
+
     def transmit_data(self):
         """This method update the yi and zi in each iteration and create a message including the new updated yi and
         zi. Finally the new message will be broadcast to all neighbors of this node. """
@@ -162,13 +178,14 @@ class Node:
         self.xi = (1 - self.epsilon) * self.xi + np.matmul((self.epsilon * np.linalg.inv(self.zi)),
                                                                np.transpose(self.yi))
 
-        self.ff = self.simulation_function_xtx_btx.get_fn(self.xi, self.A, self.b)
+        self.ff = self.simulation_function_xtx_btx.get_fn(self.xi, self.A, self.b, self.identifier)
 
         self.gi_old = self.gi
         self.hi_old = self.hi
 
-        self.hi = self.simulation_function_xtx_btx.get_hessian_fn(self.xi, self.A)
-        self.gi = np.subtract(np.matmul(self.hi, self.xi), self.simulation_function_xtx_btx.get_gradient_fn(self.xi, self.A, self.b))
+        self.hi = self.simulation_function_xtx_btx.get_hessian_fn(self.xi, self.A, self.b, self.identifier)
+        self.gi = np.subtract(np.matmul(self.hi, self.xi),
+                              self.simulation_function_xtx_btx.get_gradient_fn(self.xi, self.A, self.b, self.identifier))
 
         self.yi = self.yi + self.gi - self.gi_old
         self.zi = self.zi + self.hi - self.hi_old

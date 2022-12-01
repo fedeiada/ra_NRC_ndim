@@ -9,43 +9,30 @@ class SimulationFunctionXTX_BTX:
 
 
     @staticmethod
-    def get_fn(x: numpy.array, A, b) -> numpy.array:
+    def get_fn(x: numpy.array, A, b, id) -> numpy.array:
         """This method can be used to calculate the outcome of the function for each given Xi, Ai and Bi"""
-        f = numpy.matmul(numpy.matmul(numpy.transpose(x),A), x) + numpy.matmul(numpy.transpose(b), x)
+        if id == 'quad':
+            f = numpy.matmul(numpy.matmul(numpy.transpose(x),A), x) + numpy.matmul(numpy.transpose(b), x)
+        elif id == 'exp':
+            f = np.matmul(b[0], np.exp(np.matmul(A[0], x))) + np.matmul(b[1], np.exp(np.matmul(-A[1], x)))
         return numpy.array(f)
 
     @staticmethod
-    def get_gradient_fn(x: numpy.array, A, b) -> numpy.array:
+    def get_gradient_fn(x: numpy.array, A, b, id) -> numpy.array:
         """This method can be used to calculate the gradient for any given Xi."""
-        g = 2*np.matmul(A, x) + b
+        if id == 'quad':
+            g = 2*np.matmul(A, x) + b
+        elif id == 'exp':
+            g = np.matmul(np.matmul(b[0], A.transpose()), np.exp(np.matmul(A[0], x))) - np.matmul(np.matmul(b[1], A.transpose()), np.exp(np.matmul(-A[1], x)))
         return numpy.array(g)
 
     @staticmethod
-    def get_hessian_fn(x: numpy.array, A) -> numpy.array:
+    def get_hessian_fn(x: numpy.array, A, b, id) -> numpy.array:
         """This method can be used to calculate the hessian for any given Xi."""
-        return numpy.array(2*A)
+        if id == 'quad':
+            h = 2*A
+        elif id == 'exp':
+            h = np.matmul(np.matmul(np.matmul(b[0], A.transpose()), A[0]), np.exp(np.matmul(A[0], x))) + np.matmul(np.matmul(np.matmul(b[1], A.transpose()), A[1]), np.exp(np.matmul(-A[1], x)))
+        return numpy.array(h)
 
 
-    '''@staticmethod
-    def get_fn(x: numpy.array) -> numpy.array:
-        """This method can be used to calculate the outcome of the function for each given Xi and Bi"""
-        # f = 3 * (x+1)**2
-        f = 0.1 * ((x) ** 4)
-        # f = numpy.exp(-x)
-        return numpy.array(f)
-
-    @staticmethod
-    def get_gradient_fn(x: numpy.array) -> numpy.array:
-        """This method can be used to calculate the gradient for any given Xi."""
-        # g = 6 * (x+1)
-        g = 0.4 * (x ** 3)
-        # g = - numpy.exp(-x)
-        return numpy.array(g)
-
-    @staticmethod
-    def get_hessian_fn(x: numpy.array) -> numpy.array:
-        """This method can be used to calculate the hessian for any given Xi."""
-        # h = 6
-        h = 1.2 * (x ** 2)
-        # h = numpy.exp(-x)
-        return numpy.array(h)'''
