@@ -14,6 +14,7 @@ class SimulationSpecification:
         self.p = 0.5  # prob of node selection
         self.costfun = 'quad'  # select the desired cost function: 'exp' -> exponential , 'quad'->quadratic
         self.MAX_ITER = 20000
+        self.dimension = self.x0.size
 
 
 

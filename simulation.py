@@ -7,7 +7,7 @@ import numpy as np
 import networkx as nx
 import SimulationSpecification
 import SimulationFunctionXTX_BTX
-
+import CentralOptimSolution
 
 
 import matplotlib.pyplot as plt
@@ -69,6 +69,13 @@ for i in range(sim_spec.number_of_nodes):
 message_container = [[] for i in range(sim_spec.number_of_nodes)]
 msg_rel = 1
 buffer = [[] for i in range(sim_spec.number_of_nodes)]
+
+# #######  COMPUTE OPTIMAL CENTRAL SOLUTION #########
+CntrOpt = CentralOptimSolution.CentralOptim(sim_spec.number_of_nodes, sim_spec.dimension, sim_spec.costfun, simulationFunction)
+for i in range(sim_spec.number_of_nodes):
+    solution = CntrOpt.OptimalCentralSolution(nodes[i].A, nodes[i].b, nodes[i].xi)
+print(f'solution:{solution}')
+
 
 # ########### LOOP ###################
 iter = 1
