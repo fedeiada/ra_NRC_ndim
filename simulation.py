@@ -71,10 +71,10 @@ msg_rel = 1
 buffer = [[] for i in range(sim_spec.number_of_nodes)]
 
 # #######  COMPUTE OPTIMAL CENTRAL SOLUTION #########
-CntrOpt = CentralOptimSolution.CentralOptim(sim_spec.number_of_nodes, sim_spec.dimension, sim_spec.costfun, simulationFunction)
+'''CntrOpt = CentralOptimSolution.CentralOptim(sim_spec.number_of_nodes, sim_spec.dimension, sim_spec.costfun, simulationFunction)
 for i in range(sim_spec.number_of_nodes):
-    solution = CntrOpt.OptimalCentralSolution(nodes[i].A, nodes[i].b, nodes[i].xi)
-print(f'solution:{solution}')
+    CntrOpt.OptimalCentralSolution(nodes[i].A, nodes[i].b, nodes[i].xi)
+#print(f'solution:{solution}')'''
 
 
 # ########### LOOP ###################
@@ -119,6 +119,14 @@ while not CONVERGENCE_FLAG:
         print(f"Reached convergence at iter:{iter}")
     iter += 1
 
+for j in range(sim_spec.number_of_nodes):
+    print(f'            node_{j}:\n'
+          f'A:{nodes[j].A}  b:{nodes[j].b}\n'
+          f'init:{nodes[j].all_calculated_xis[0]}\n'
+          f'ending point:{nodes[j].xi}\n'
+          f'----------------------------------------------------\n')
+#print(f'solution: {solution}')
+
 distances = [[] for a in range(sim_spec.number_of_nodes)]
 fig, axs = plt.subplots(1, 2, figsize=(13, 8))
 for j in range(sim_spec.number_of_nodes):
@@ -144,14 +152,14 @@ plt.savefig('multiple_plot1.png')
 plt.show()
 
 # logarithmic plot of MSE and distance until optimum
-MSE = []
+'''MSE = []
 distances = [[] for a in range(sim_spec.number_of_nodes)]
 fig, axs = plt.subplots(1, 2, figsize=(13, 8))
 for k in range(iter-2):
     mse_k = 0
     for i in range(sim_spec.number_of_nodes):
-        mse_k += ((np.abs(np.linalg.norm(nodes[i].all_calculated_xis[k])-np.linalg.norm(nodes[i].xi)))**2)/sim_spec.number_of_nodes
-        dst = np.sqrt(np.sum((nodes[i].xi - nodes[i].all_calculated_xis[k]) ** 2))
+        mse_k += ((np.abs(np.linalg.norm(nodes[i].all_calculated_xis[k])-np.linalg.norm(solution)))**2)/sim_spec.number_of_nodes
+        dst = np.sqrt((solution-nodes[i].all_calculated_xis[k]) ** 2)
         distances[i].append(dst)
     MSE.append(mse_k)
 for i in range(sim_spec.number_of_nodes):
@@ -170,7 +178,7 @@ axs[1].grid()
 axs[0].set_yscale('log')
 axs[1].set_yscale('log')
 plt.savefig('multiple_plot_log.png')
-plt.show()
+plt.show()'''
 
 '''fig, axs = plt.subplots(1, 2, figsize=(13, 8))
 for j in range(sim_spec.number_of_nodes):
@@ -189,16 +197,7 @@ axs[1].grid()
 plt.savefig('consensus_signal.png')
 plt.show()'''
 
-for j in range(sim_spec.number_of_nodes):
-    print(f'            node_{j}:\n'
-          f'A:{nodes[j].A}  b:{nodes[j].b}\n'
-          f'init:{nodes[j].all_calculated_xis[0]}\n'
-          f'ending point:{nodes[j].xi}\n'
-          f'----------------------------------------------------\n')
 
-
-
-np.linalg.norm
 '''nodes[i].yi = (1 / (nodes[i].number_of_neighbors+1)) * nodes[i].yi
             nodes[i].zi = (1 / (nodes[i].number_of_neighbors + 1)) * nodes[i].zi
             nodes[i].sigma_yi = nodes[i].sigma_yi + nodes[i].yi

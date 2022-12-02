@@ -47,18 +47,18 @@ class Node:
         self.hi = np.eye(x0.size)
         #self.hi = self.simulation_function_xtx_btx.get_hessian_fn(self.xi, self.cost_function, self.coeff)
 
-        self.gi = np.zeros(x0.size)
+        self.gi = np.zeros(x0.size).transpose()
         #self.gi = np.subtract((self.hi * self.xi), self.simulation_function_xtx_btx.get_gradient_fn(self.xi, self.cost_function, self.coeff))
-        self.gi_old = np.zeros(x0.size)
+        self.gi_old = np.zeros(x0.size).transpose()
         #self.gi_old = np.subtract((self.hi * self.xi), self.simulation_function_xtx_btx.get_gradient_fn(self.xi, self.cost_function, self.coeff))
         self.zi = np.eye(x0.size) #self.hi_old
-        self.yi = np.zeros(x0.size) #self.gi_old
+        self.yi = np.zeros(x0.size).transpose() #self.gi_old
 
         self.c = c
         self.cI = c * np.eye(x0.size)  # variable to be check in order to ensure robustness and large basin of attraction
 
 
-        self.sigma_yi = np.zeros(x0.size)  # counter of the total mass-y sent
+        self.sigma_yi = np.zeros(x0.size).transpose()  # counter of the total mass-y sent
         self.sigma_zi = np.zeros((x0.size, x0.size))    # counter of the total mass-z sent, matrix x0.size X x0.size
 
         self.rho_yj = np.zeros((adjacency_vector.size, x0.size))   # counter of the total mass-y received from j, matrix_dim X xo.size
@@ -82,8 +82,8 @@ class Node:
             A = 0.5 * (A + A.transpose())  # make the matrix symmetric
             if np.linalg.det(A) >= 1:   # ensure positive definiteness
                 break
-        b = np.random.uniform(0, 2, self.xi.size)
-        return A,b
+        b = np.random.uniform(0, 2, self.xi.size).transpose()
+        return A, b
 
     def exponential(self):
         A = np.zeros((2, self.xi.size, self.xi.size))
@@ -94,7 +94,7 @@ class Node:
                 AA = 0.5 * (AA + AA.transpose())  # make the matrix symmetric
                 if np.linalg.det(AA) >= 1:  # ensure positive definiteness
                     break
-            bb = np.random.uniform(1, 1, self.xi.size)
+            bb = np.random.uniform(0, 1, self.xi.size)
             A[i] = AA
             b[i] = bb
         return A, b
@@ -185,7 +185,7 @@ class Node:
         self.hi_old = self.hi
 
         self.hi = self.simulation_function_xtx_btx.get_hessian_fn(self.xi, self.A, self.b, self.identifier)
-        self.gi = np.subtract(np.matmul(self.hi, self.xi),
+        self.gi = np.subtract(np.matmul(self.hi, self.xi.transpose()),
                               self.simulation_function_xtx_btx.get_gradient_fn(self.xi, self.A, self.b, self.identifier))
 
         self.yi = self.yi + self.gi - self.gi_old
