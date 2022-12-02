@@ -76,7 +76,7 @@ while not CONVERGENCE_FLAG:
     # randomly activate some agents
     #id_of_agent_activated = random.sample(agent_identifier, k=random.randint(1, sim_spec.number_of_nodes))  # chose which agent activate
     id_of_agent_activated = random_selection.persistent_communication()
-    #id_of_agent_activated = random.sample(agent_identifier, k=3)
+    #id_of_agent_activated = random.sample(agent_identifier, k=2)
 
     # usefull breakpoint to debug
     if iter == 2000:
@@ -165,7 +165,7 @@ axs[1].set_yscale('log')
 plt.savefig('multiple_plot_log.png')
 plt.show()
 
-fig, axs = plt.subplots(1, 2, figsize=(13, 8))
+'''fig, axs = plt.subplots(1, 2, figsize=(13, 8))
 for j in range(sim_spec.number_of_nodes):
     axs[0].plot(nodes[j].ratio_evol[0:100], label=f'g/h_{j}')
     axs[1].plot(nodes[j].zi_evol[0:2000], label=f'z_{j}')
@@ -180,7 +180,7 @@ axs[1].set_ylabel('z_i')
 axs[0].grid()
 axs[1].grid()
 plt.savefig('consensus_signal.png')
-plt.show()
+plt.show()'''
 
 for j in range(sim_spec.number_of_nodes):
     print(f'            node_{j}:\n'

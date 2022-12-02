@@ -90,11 +90,11 @@ class Node:
         b = np.zeros((2, self.xi.size))
         for i in range(2):
             while True:
-                AA = np.random.uniform(-1, 2, (self.xi.size, self.xi.size))
+                AA = np.random.uniform(-2, 3, (self.xi.size, self.xi.size))
                 AA = 0.5 * (AA + AA.transpose())  # make the matrix symmetric
                 if np.linalg.det(AA) >= 1:  # ensure positive definiteness
                     break
-            bb = np.random.uniform(0, 1, self.xi.size)
+            bb = np.random.uniform(1, 1, self.xi.size)
             A[i] = AA
             b[i] = bb
         return A, b
@@ -168,6 +168,7 @@ class Node:
             self.all_calculated_xis.append(self.xi)
             self.evolution_costfun.append(self.ff)
 
+        a = np.linalg.det(self.zi)
         # check condition on z
         if (np.linalg.det(self.zi) <= self.c):
             self.zi = self.cI
@@ -190,9 +191,9 @@ class Node:
         self.yi = self.yi + self.gi - self.gi_old
         self.zi = self.zi + self.hi - self.hi_old
 
-        self.ratio = np.matmul(self.yi, np.linalg.inv(self.zi))
+        '''self.ratio = np.matmul(self.yi, np.linalg.inv(self.zi))
         self.ratio_evol.append(self.ratio)
-        self.zi_evol.append(self.zi[0])
+        self.zi_evol.append(self.zi[0])'''
 
 
         print(f"Node ID: {self.node_id} -  Updating data ended!\n")

@@ -7,13 +7,13 @@ class SimulationSpecification:
     collect the simulation specification. """
     def __init__(self):
         self.number_of_nodes: list[Node] = 3
-        self.x0 = np.array([0.2, 1.3, 1.6])
-        self.epsilon = 0.0005
+        self.x0 = np.array([0.2, 1.3, -0.4])
+        self.epsilon = 0.001
         self.min_accepted_divergence = 0.00001
-        self.c = 0.000001
+        self.c = 0.00001
         self.p = 0.5  # prob of node selection
-        self.costfun = 'exp'  # 'exp' -> exponential , 'quad'->quadratic
-        self.MAX_ITER = 10000
+        self.costfun = 'quad'  # select the desired cost function: 'exp' -> exponential , 'quad'->quadratic
+        self.MAX_ITER = 20000
 
 
 
