@@ -71,10 +71,10 @@ msg_rel = 1
 buffer = [[] for i in range(sim_spec.number_of_nodes)]
 
 # #######  COMPUTE OPTIMAL CENTRAL SOLUTION #########
-'''CntrOpt = CentralOptimSolution.CentralOptim(sim_spec.number_of_nodes, sim_spec.dimension, sim_spec.costfun, simulationFunction)
+CntrOpt = CentralOptimSolution.CentralOptim(sim_spec.number_of_nodes, sim_spec.dimension, sim_spec.costfun, simulationFunction)
 for i in range(sim_spec.number_of_nodes):
     CntrOpt.OptimalCentralSolution(nodes[i].A, nodes[i].b, nodes[i].xi)
-#print(f'solution:{solution}')'''
+#print(f'solution:{solution}')
 
 
 # ########### LOOP ###################
@@ -152,14 +152,14 @@ plt.savefig('multiple_plot1.png')
 plt.show()
 
 # logarithmic plot of MSE and distance until optimum
-'''MSE = []
+MSE = []
 distances = [[] for a in range(sim_spec.number_of_nodes)]
 fig, axs = plt.subplots(1, 2, figsize=(13, 8))
 for k in range(iter-2):
     mse_k = 0
     for i in range(sim_spec.number_of_nodes):
-        mse_k += ((np.abs(np.linalg.norm(nodes[i].all_calculated_xis[k])-np.linalg.norm(solution)))**2)/sim_spec.number_of_nodes
-        dst = np.sqrt((solution-nodes[i].all_calculated_xis[k]) ** 2)
+        mse_k += ((np.abs(np.linalg.norm(nodes[i].all_calculated_xis[k])-np.linalg.norm(CntrOpt.res.x)))**2)/sim_spec.number_of_nodes
+        dst = np.sqrt((CntrOpt.res.x-nodes[i].all_calculated_xis[k]) ** 2)
         distances[i].append(dst)
     MSE.append(mse_k)
 for i in range(sim_spec.number_of_nodes):
@@ -178,8 +178,8 @@ axs[1].grid()
 axs[0].set_yscale('log')
 axs[1].set_yscale('log')
 plt.savefig('multiple_plot_log.png')
-plt.show()'''
-
+plt.show()
+print('bufu')
 '''fig, axs = plt.subplots(1, 2, figsize=(13, 8))
 for j in range(sim_spec.number_of_nodes):
     axs[0].plot(nodes[j].ratio_evol[0:100], label=f'g/h_{j}')

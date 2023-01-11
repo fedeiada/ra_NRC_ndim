@@ -77,11 +77,12 @@ class Node:
         self.ratio = 0
 
     def quadratic(self):
-        while True:
-            A = np.random.uniform(-1, 2, (self.xi.size, self.xi.size))
+        '''while True:
+            A = np.random.uniform(0, 1, (self.xi.size, self.xi.size))
             A = 0.5 * (A + A.transpose())  # make the matrix symmetric
             if np.linalg.det(A) >= 1:   # ensure positive definiteness
-                break
+                break'''
+        A = np.random.uniform(0, 0.3, self.xi.size) * np.eye(self.xi.size)
         b = np.random.uniform(0, 2, self.xi.size).transpose()
         return A, b
 
@@ -169,8 +170,11 @@ class Node:
             self.evolution_costfun.append(self.ff)
 
         a = np.linalg.det(self.zi)
+        c = np.abs(np.linalg.eigvals(self.zi))
         # check condition on z
-        if (np.linalg.det(self.zi) <= self.c):
+        '''if (np.linalg.det(self.zi) <= self.c):
+            self.zi = self.cI'''
+        if (np.abs(np.linalg.eigvals(self.zi)) < self.c).all():
             self.zi = self.cI
 
         '''if iter >= 3000:
@@ -206,9 +210,9 @@ class Node:
         been provided by the user, then it would be considered that calculated xi has enough convergence to its
         target value. """
         self.is_convergence_sufficient = False
-        if len(self.all_calculated_xis) > 800:
+        if len(self.all_calculated_xis) > 400:
             self.is_convergence_sufficient = True
-            for i in range(800):
+            for i in range(400):
                 for j in range(self.all_calculated_xis[-(i + 1)].size):
                     if abs(abs(self.all_calculated_xis[-(i + 1)][j]) - abs(
                             self.all_calculated_xis[-(i + 1) - 1][j])) > self.minimum_accepted_divergence:

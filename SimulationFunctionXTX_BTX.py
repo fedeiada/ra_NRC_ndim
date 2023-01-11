@@ -1,8 +1,8 @@
 import numpy
 import random
 
-import numpy as np
-
+#import numpy as np
+import autograd.numpy as np
 
 class SimulationFunctionXTX_BTX:
     """This class representing the simulation function. This class can be used to calculate the gradient and hessian of the mentioned function. """
@@ -12,7 +12,8 @@ class SimulationFunctionXTX_BTX:
     def get_fn(x: numpy.array, A, b, id) -> numpy.array:
         """This method can be used to calculate the outcome of the function for each given Xi, Ai and Bi"""
         if id == 'quad':
-            f = numpy.matmul(numpy.matmul(x.transpose(), A), x) + numpy.matmul(b.transpose(), x)
+            #f = numpy.matmul(numpy.matmul(x.transpose(), A), x) + numpy.matmul(b.transpose(), x)
+            f = ((x.transpose() @ A) @ x) + (b.transpose() @ x)
         elif id == 'exp':
             f = np.matmul(b[0].transpose(), np.exp(np.matmul(A[0], x))) + np.matmul(b[1].transpose(), np.exp(np.matmul(-A[1], x)))
         return numpy.array(f)
