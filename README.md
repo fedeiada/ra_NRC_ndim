@@ -7,7 +7,7 @@ Single thread code for ra-NRC that can handle multi dimensional cost functions,
 
 ## Documentation
 You can find a presentation of the algorithms and how it works [here](https://github.com/fedeiada/ra_NRC_ndim/files/10932072/NRC-presentation.pdf). 
-The algorithm implements a ratio consensus that reconstruct the global value of the gradient and hessian. The step-size is fixed. Next figure shows the evolution of the consensus signals that correctly reach an common value
+The algorithm implements a ratio consensus that reconstruct the global value of the gradient and hessian. The step-size is fixed. Next figure shows the evolution of the consensus signals that correctly reach a common value
 ![ratio_consensus_signal](https://user-images.githubusercontent.com/98212546/224038972-11d21211-5277-48fc-b49d-e5a127db7e51.png)
 
 
