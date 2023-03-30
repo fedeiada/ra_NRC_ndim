@@ -12,7 +12,7 @@ class SimulationSpecification:
         self.min_accepted_divergence = 0.00005
         self.c = 0.0000001
         self.p = 0.5  # prob of node selection
-        self.costfun = 'quad'  # select the desired cost function: 'exp' -> exponential , 'quad'->quadratic
+        self.costfun = 'exp'  # select the desired cost function: 'exp' -> exponential , 'quad'->quadratic
         self.MAX_ITER = 20000
         self.dimension = self.x0.size
 

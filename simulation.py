@@ -81,9 +81,7 @@ for i in range(sim_spec.number_of_nodes):
 iter = 1
 while not CONVERGENCE_FLAG:
     # randomly activate some agents
-    #id_of_agent_activated = random.sample(agent_identifier, k=random.randint(1, sim_spec.number_of_nodes))  # chose which agent activate
     id_of_agent_activated = random_selection.persistent_communication()
-    #id_of_agent_activated = random.sample(agent_identifier, k=2)
 
     # usefull breakpoint to debug
     if iter == 2000:
@@ -132,11 +130,6 @@ fig, axs = plt.subplots(1, 2, figsize=(13, 8))
 for j in range(sim_spec.number_of_nodes):
     axs[0].plot(nodes[j].evolution_costfun, '-', label=f'J0_{j}')
     opt = nodes[j].xi
-    '''for i in range(len(nodes[j].all_calculated_xis)):
-        xi = np.array(nodes[j].all_calculated_xis[i])
-        dst = np.sqrt(np.sum((opt - xi) ** 2))
-        distances[j].append(dst)
-    axs[2].plot(distances[j], '-', label=f'node_{j}')'''
     axs[1].plot(nodes[j].all_calculated_xis, label=f'node_{j}')
 axs[0].legend(loc='upper right', ncol=1)
 axs[0].set_title('Evolution of J0_i')
@@ -155,7 +148,7 @@ plt.show()
 MSE = []
 distances = [[] for a in range(sim_spec.number_of_nodes)]
 fig, axs = plt.subplots(1, 2, figsize=(13, 8))
-for k in range(iter-2):
+for k in range(iter-5):
     mse_k = 0
     for i in range(sim_spec.number_of_nodes):
         mse_k += ((np.abs(np.linalg.norm(nodes[i].all_calculated_xis[k])-np.linalg.norm(CntrOpt.res.x)))**2)/sim_spec.number_of_nodes
@@ -179,26 +172,3 @@ axs[0].set_yscale('log')
 axs[1].set_yscale('log')
 plt.savefig('multiple_plot_log.png')
 plt.show()
-print('bufu')
-'''fig, axs = plt.subplots(1, 2, figsize=(13, 8))
-for j in range(sim_spec.number_of_nodes):
-    axs[0].plot(nodes[j].ratio_evol[0:100], label=f'g/h_{j}')
-    axs[1].plot(nodes[j].zi_evol[0:2000], label=f'z_{j}')
-axs[0].legend(loc='upper right', ncol=1)
-axs[0].set_title('Evolution of ratio consensus')
-axs[0].set_xlabel('Iteration')
-axs[0].set_ylabel('Sum(g)/Sum(h)')
-axs[1].legend(loc='upper right', ncol=1)
-axs[1].set_title('Evolution zi')
-axs[1].set_xlabel('Iteration')
-axs[1].set_ylabel('z_i')
-axs[0].grid()
-axs[1].grid()
-plt.savefig('consensus_signal.png')
-plt.show()'''
-
-
-'''nodes[i].yi = (1 / (nodes[i].number_of_neighbors+1)) * nodes[i].yi
-            nodes[i].zi = (1 / (nodes[i].number_of_neighbors + 1)) * nodes[i].zi
-            nodes[i].sigma_yi = nodes[i].sigma_yi + nodes[i].yi
-            nodes[i].sigma_zi = nodes[i].sigma_zi + nodes[i].zi'''

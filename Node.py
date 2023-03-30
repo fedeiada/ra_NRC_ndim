@@ -43,14 +43,10 @@ class Node:
         self.adjacency_vector = adjacency_vector
 
         self.hi_old = np.eye(x0.size)
-        #self.hi_old = self.simulation_function_xtx_btx.get_hessian_fn(self.xi, self.cost_function, self.coeff)
         self.hi = np.eye(x0.size)
-        #self.hi = self.simulation_function_xtx_btx.get_hessian_fn(self.xi, self.cost_function, self.coeff)
 
         self.gi = np.zeros(x0.size).transpose()
-        #self.gi = np.subtract((self.hi * self.xi), self.simulation_function_xtx_btx.get_gradient_fn(self.xi, self.cost_function, self.coeff))
         self.gi_old = np.zeros(x0.size).transpose()
-        #self.gi_old = np.subtract((self.hi * self.xi), self.simulation_function_xtx_btx.get_gradient_fn(self.xi, self.cost_function, self.coeff))
         self.zi = np.eye(x0.size) #self.hi_old
         self.yi = np.zeros(x0.size).transpose() #self.gi_old
 
@@ -90,11 +86,12 @@ class Node:
         A = np.zeros((2, self.xi.size, self.xi.size))
         b = np.zeros((2, self.xi.size))
         for i in range(2):
-            while True:
+            '''while True:
                 AA = np.random.uniform(-2, 3, (self.xi.size, self.xi.size))
                 AA = 0.5 * (AA + AA.transpose())  # make the matrix symmetric
                 if np.linalg.det(AA) >= 1:  # ensure positive definiteness
-                    break
+                    break'''
+            AA = np.random.uniform(0, 0.3, self.xi.size) * np.eye(self.xi.size)
             bb = np.random.uniform(0, 1, self.xi.size)
             A[i] = AA
             b[i] = bb
@@ -126,7 +123,7 @@ class Node:
         print(f"Node ID: {self.node_id} -  transmitting data ended!\n")
         return
 
-    def broadcast(self, message):
+    '''def broadcast(self, message):
         """This method will broadcast the passed message to all neighbors of this node."""
         print(f"Node ID: {self.node_id} -  broadcasting started!\n")
         with self.lock:
@@ -137,7 +134,7 @@ class Node:
                 i += 1
         time.sleep(0.05)
         print(f"Node ID: {self.node_id} -  broadcasting ended!\n")
-        return
+        return'''
 
     def receive_data(self, message):
         """This method will handle the reception of data from neighbors. Using the yi and zi from the messages,
@@ -169,16 +166,9 @@ class Node:
             self.all_calculated_xis.append(self.xi)
             self.evolution_costfun.append(self.ff)
 
-        a = np.linalg.det(self.zi)
-        c = np.abs(np.linalg.eigvals(self.zi))
-        # check condition on z
-        '''if (np.linalg.det(self.zi) <= self.c):
-            self.zi = self.cI'''
+
         if (np.abs(np.linalg.eigvals(self.zi)) < self.c).all():
             self.zi = self.cI
-
-        '''if iter >= 3000:
-            self.epsilon = 0'''
 
         self.xi = (1 - self.epsilon) * self.xi + np.matmul((self.epsilon * np.linalg.inv(self.zi)),
                                                                np.transpose(self.yi))
@@ -194,10 +184,6 @@ class Node:
 
         self.yi = self.yi + self.gi - self.gi_old
         self.zi = self.zi + self.hi - self.hi_old
-
-        '''self.ratio = np.matmul(self.yi, np.linalg.inv(self.zi))
-        self.ratio_evol.append(self.ratio)
-        self.zi_evol.append(self.zi[0])'''
 
 
         print(f"Node ID: {self.node_id} -  Updating data ended!\n")
