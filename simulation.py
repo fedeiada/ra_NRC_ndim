@@ -67,7 +67,6 @@ for i in range(sim_spec.number_of_nodes):
                 )
     nodes.append(node)
 message_container = [[] for i in range(sim_spec.number_of_nodes)]
-msg_rel = 1
 buffer = [[] for i in range(sim_spec.number_of_nodes)]
 
 # #######  COMPUTE OPTIMAL CENTRAL SOLUTION #########
@@ -97,7 +96,7 @@ while not CONVERGENCE_FLAG:
         # Transmission
         nodes[i].transmit_data()
         # Broadcast
-        message_container[i] = Message(nodes[i].node_id, nodes[i].sigma_yi, nodes[i].sigma_zi, msg_rel)
+        message_container[i] = Message(nodes[i].node_id, nodes[i].sigma_yi, nodes[i].sigma_zi, nodes[i].msg_rel)
         for j in range(sim_spec.number_of_nodes):
             if nodes[i].adjacency_vector[j] == 1:
                 buffer[j].append(message_container[i])
